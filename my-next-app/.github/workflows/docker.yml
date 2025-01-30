@@ -1,27 +1,50 @@
-name: Build a Docker image
+name: Next.js Build
 
-on: [workflow_dispatch]
+on:
+  push:
+    branches:
+      - master # Trigger the workflow on push to the main branch
+  pull_request:
+    branches:
+      - master # Trigger the workflow for pull requests targeting the main branch
 
 jobs:
-  publish_image:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest # Use the latest Ubuntu environment
 
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-.
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: build the Docker image
-        run: docker build ./my-next-app -t charansaig1/my-next-app:latest
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # Use Node.js 16 (adjust to your project's Node version)
 
-     # Run the Docker container (to test if the app works)
-     - name: Run Docker container
-     run: |
-       docker run -d -p 3000:3000 --name next-app-container my-next-app
-       # Wait for the container to start
-       sleep 10
+      - name: Install dependencies
+        run: |
+          npm install  # Install project dependencies
 
-    # Test the running container (example: test if the Next.js app is accessible)
-    - name: Test the app
-    run: |
-      curl --fail http://localhost:3000 || exit 1
+      - name: Run linting and types validation
+        run: |
+          npm run lint  # If you have a lint script
+          npm run type-check  # Run type-checking if using TypeScript
+
+      - name: Build Next.js app
+        run: |
+          npm run build  # Build the Next.js app
+
+      - name: Run tests (optional)
+        run: |
+          npm test  # Run your Jest tests if you have any
+
+      - name: Upload Build artifacts (optional)
+        uses: actions/upload-artifact@v3
+        with:
+          name: nextjs-build
+          path: .next # Upload the build artifacts (optional)
+
+      - name: Deploy (optional, for deployment to services like Vercel or others)
+        run: |
+          # Add deployment steps here, e.g., for Vercel or AWS
+          echo "Deploying application..."
