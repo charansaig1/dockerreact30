@@ -23,28 +23,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install  # Install project dependencies
+          npm install
 
       - name: Run linting and types validation
         run: |
-          npm run lint  # If you have a lint script
+          npm run lint
           npm run type-check  # Run type-checking if using TypeScript
 
       - name: Build Next.js app
         run: |
-          npm run build  # Build the Next.js app
-
-      - name: Run tests (optional)
-        run: |
-          npm test  # Run your Jest tests if you have any
-
-      - name: Upload Build artifacts (optional)
-        uses: actions/upload-artifact@v3
-        with:
-          name: nextjs-build
-          path: .next # Upload the build artifacts (optional)
-
-      - name: Deploy (optional, for deployment to services like Vercel or others)
-        run: |
-          # Add deployment steps here, e.g., for Vercel or AWS
-          echo "Deploying application..."
+          npm run build
